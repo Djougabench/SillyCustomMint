@@ -98,37 +98,35 @@ export default function Home() {
         {isLoading ? (
           <Spinner />
         ) : account ? (
-          () => {
-            switch (isWhitelistSaleActive) {
-              case null:
-                return <Spinner />;
-              case false:
-                return (
-                  <OGWhiteListSale
-                    BNOGWlSalePrice={BNOGWlSalePrice}
-                    OGWlSalePrice={OGWlSalePrice}
-                    totalSupply={totalSupply}
-                    getDatas={getDatas}
-                  />
-                );
-              case true:
-                return (
-                  <isWhitelistSaleActive
-                    BNWlSalePrice={BNWlSalePrice}
-                    wlSalePrice={wlSalePrice}
-                    totalSupply={totalSupply}
-                    getDatas={getDatas}
-                  />
-                );
-
-              default:
-                return <Flex>Return your wallet</Flex>;
-            }
-          }
+          isWhitelistSaleActive ? (
+            <WhiteListSale
+              BNWlSalePrice={BNWlSalePrice}
+              wlSalePrice={wlSalePrice}
+              totalSupply={totalSupply}
+              getDatas={getDatas}
+            />
+          ) : isOGWhitelistSaleActive ? (
+            <OGWhiteListSale
+              BNOGWlSalePrice={BNOGWlSalePrice}
+              OGWlSalePrice={OGWlSalePrice}
+              totalSupply={totalSupply}
+              getDatas={getDatas}
+            />
+          ) : !isWhitelistSaleActive && !isOGWhitelistSaleActive ? (
+            <PublicSale
+              BNPublicSalePrice={BNPublicSalePrice}
+              publicSalePrice={publicSalePrice}
+              totalSupply={totalSupply}
+              getDatas={getDatas}
+            />
+          ) : (
+            <Before />
+          )
         ) : (
-          <Text fontSize={30}>Please connect your wallet</Text>
+          <Flex>connect man</Flex>
         )}
       </Flex>
     </Layout>
   );
 }
+//["0x00314e565e0574cb412563df634608d76f5c59d9f817e85966100ec1d48005c0","0x6172d0ae03666c2fa54a2f3de635d5245154f53c9368f033c19f5077d2859a28"]

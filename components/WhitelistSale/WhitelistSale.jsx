@@ -19,13 +19,15 @@ const WhitelistSale = (props) => {
   const { account, provider } = useEthersProvider();
   const [isLoading, setIsloading] = useState(false);
   const [mintIsloading, setMintIsLoading] = useState(false);
+  const [isWhitelistSaleActive, setIsWhitelistSaleActive] = useState(false);
+  const [isOGWhitelistSaleActive, setIsOGWhitelistSaleActive] = useState(false);
 
   const toast = useToast();
   const contractAdress = "0xa2931e93d4ec895bd241f7ecc4a72d0ca8e468ed";
 
   const mint = async () => {
     const signer = provider.getsigner();
-    const contract = new ethers.Contract(contractAdress, contract.abi, signer);
+    const contract = new ethers.Contract(contractAdress, Contract.abi, signer);
 
     let tab = [];
     tokens.map((token) => {
@@ -45,6 +47,9 @@ const WhitelistSale = (props) => {
         proof,
         overrides
       );
+
+      setIsWhitelistSaleActive(isWhitelistSaleActive);
+      setIsOGWhitelistSaleActive(isOGWhitelistSaleActive);
 
       setMintIsLoading(true);
       await transaction.wait();

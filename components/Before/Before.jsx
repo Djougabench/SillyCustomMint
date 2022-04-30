@@ -5,7 +5,7 @@ const Before = () => {
   return (
     <Flex>
       <Text fontSize="3rem" fontWeight="bold">
-        comming soon
+        Before
       </Text>
     </Flex>
   );
