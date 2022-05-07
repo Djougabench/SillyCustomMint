@@ -30,7 +30,6 @@
     "react-dom": "18.0.0"
   },
   "devDependencies": {
-    "erc721a": "^3.2.0",
     "eslint": "8.13.0",
     "eslint-config-next": "12.1.5",
     "hardhat-gas-reporter": "^1.0.8"

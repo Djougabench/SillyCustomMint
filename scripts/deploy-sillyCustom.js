@@ -11,7 +11,7 @@ async function main() {
   const leaves = tab.map((address) => keccak256(address));
   tree = new MerkleTree(leaves, keccak256, { sort: true });
   const root = tree.getHexRoot();
-  baseURI = "ipfs://QmSsdTewBoTm6KZ1g1pfVNgLvc698UYmq52UJJsdvm4cfV/";
+  const baseURI = "ipfs://QmSsdTewBoTm6KZ1g1pfVNgLvc698UYmq52UJJsdvm4cfV/";
 
   const Contract = await hre.ethers.getContractFactory("SillyCustom");
   const contract = await Contract.deploy(root, baseURI);
@@ -20,7 +20,7 @@ async function main() {
 
   console.log(
     "contract deployed to:",
-    contract.address + " - root " + root + "baseURI" + baseURI
+    contract.address + " - root " + root + " - baseURI " + baseURI
   );
 }
 main()

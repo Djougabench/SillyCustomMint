@@ -14,6 +14,8 @@ export default function Home() {
   const { account, provider } = useEthersProvider();
   const [isLoading, setIsloading] = useState(false);
 
+  // isActive, is the contract active
+  const [isActive, setIsActive] = useState(false);
   //isWhitelistSaleActive
   const [isWhitelistSaleActive, setIsWhitelistSaleActive] = useState(false);
 
@@ -36,7 +38,7 @@ export default function Home() {
   const [totalSupply, setTotalSupply] = useState(null);
 
   const toast = useToast();
-  const contractAdress = "0xa2931e93d4ec895bd241f7ecc4a72d0ca8e468ed";
+  const contractAdress = "0xF3F703D91A909E87D79da828A8D817f1DBfA7fCD";
 
   useEffect(() => {
     if (account) {
@@ -51,6 +53,9 @@ export default function Home() {
       Contract.abi,
       provider
     );
+
+    let isActive = await contract.isActive();
+    console.log("isActive :", isActive);
 
     let isWhitelistSaleActive = await contract.isWhitelistSaleActive();
     console.log("isWhitelistSaleActive :", isWhitelistSaleActive);
@@ -79,9 +84,9 @@ export default function Home() {
     let totalSupply = await contract.totalSupply();
     totalSupply = totalSupply.toString();
 
+    setIsActive(isActive);
     setIsWhitelistSaleActive(isWhitelistSaleActive);
     setIsOGWhitelistSaleActive(isOGWhitelistSaleActive);
-
     setWlSalePrice(WhiteListPrice);
     setBNWlSalePrice(WhiteListPriceBN);
     setOGWlSalePrice(OGWhiteListPrice);
@@ -98,29 +103,32 @@ export default function Home() {
         {isLoading ? (
           <Spinner />
         ) : account ? (
-          isWhitelistSaleActive ? (
+          isWhitelistSaleActive && isActive ? (
             <WhiteListSale
+              isWhitelistSaleActive={isWhitelistSaleActive}
               BNWlSalePrice={BNWlSalePrice}
               wlSalePrice={wlSalePrice}
               totalSupply={totalSupply}
               getDatas={getDatas}
             />
-          ) : isOGWhitelistSaleActive ? (
+          ) : isOGWhitelistSaleActive && isActive ? (
             <OGWhiteListSale
               BNOGWlSalePrice={BNOGWlSalePrice}
               OGWlSalePrice={OGWlSalePrice}
               totalSupply={totalSupply}
               getDatas={getDatas}
             />
-          ) : !isWhitelistSaleActive && !isOGWhitelistSaleActive ? (
+          ) : !isWhitelistSaleActive && !isOGWhitelistSaleActive && isActive ? (
             <PublicSale
               BNPublicSalePrice={BNPublicSalePrice}
               publicSalePrice={publicSalePrice}
               totalSupply={totalSupply}
               getDatas={getDatas}
             />
-          ) : (
+          ) : !isActive ? (
             <Before />
+          ) : (
+            <Flex>PLEASE CONNECT YOUR WALLET</Flex>
           )
         ) : (
           <Flex>connect man</Flex>

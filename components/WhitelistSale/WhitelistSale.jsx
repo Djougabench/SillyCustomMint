@@ -23,23 +23,26 @@ const WhitelistSale = (props) => {
   const [isOGWhitelistSaleActive, setIsOGWhitelistSaleActive] = useState(false);
 
   const toast = useToast();
-  const contractAdress = "0xa2931e93d4ec895bd241f7ecc4a72d0ca8e468ed";
+  const contractAdress = "0xF3F703D91A909E87D79da828A8D817f1DBfA7fCD";
 
   const mint = async () => {
-    const signer = provider.getsigner();
+    const signer = provider.getSigner();
     const contract = new ethers.Contract(contractAdress, Contract.abi, signer);
 
     let tab = [];
     tokens.map((token) => {
       tab.push(token.address);
     });
-    const leaves = tab.map((address) => keccak256(address));
+    let leaves = tab.map((address) => keccak256(address));
     let tree = new MerkleTree(leaves, keccak256, { sort: true });
     let leaf = keccak256(account);
     let proof = tree.getHexProof(leaf);
     let overrides = {
       value: props.BNWlSalePrice,
     };
+    setIsWhitelistSaleActive(isWhitelistSaleActive);
+    setIsOGWhitelistSaleActive(isOGWhitelistSaleActive);
+
     try {
       let transaction = await contract.whitelistMint(
         account,
@@ -47,9 +50,6 @@ const WhitelistSale = (props) => {
         proof,
         overrides
       );
-
-      setIsWhitelistSaleActive(isWhitelistSaleActive);
-      setIsOGWhitelistSaleActive(isOGWhitelistSaleActive);
 
       setMintIsLoading(true);
       await transaction.wait();
@@ -96,7 +96,7 @@ const WhitelistSale = (props) => {
                     </Flex>
                   ) : (
                     <Flex
-                      P="2rem "
+                      p="2rem "
                       align="center"
                       direction={["column", "column", "row", "row"]}
                     >
@@ -104,22 +104,36 @@ const WhitelistSale = (props) => {
                         width={["100%", "100%", "50%", "50%"]}
                         align="center"
                         direction="column"
-                      ></Flex>
-
-                      <Text
-                        fontWeight="bold"
-                        fontSize={["2rem", "2rem", "3rem", "4rem"]}
                       >
-                        Whitelist Sale
-                      </Text>
-                      <Text fontSize={["1,5rem", "1,5rem", "2rem", "3rem"]}>
-                        <chakra.span fontWeight="bold">
-                          NFTs SOLD :{" "}
-                        </chakra.span>
-                        <chakra.span fontWeight="bold" color="orange">
-                          {props.totalSupply}/14
-                        </chakra.span>
-                      </Text>
+                        <Text
+                          fontWeight="bold"
+                          fontSize={["2rem", "2rem", "2rem", "3rem"]}
+                        >
+                          Whitelist Sale
+                        </Text>
+                        <Text fontSize={["1rem", "1rem", "1,5rem", "2rem"]}>
+                          <chakra.span fontWeight="bold">
+                            NFT SOLD :
+                          </chakra.span>
+                          <chakra.span fontWeight="bold" color="orange">
+                            {props.totalSupply}/14
+                          </chakra.span>
+                        </Text>
+
+                        <Text fontSize="1.5rem">
+                          <chakra.span fontWeight="bold">Price :</chakra.span>
+                          <chakra.span color="orange" fontWeight="bold">
+                            {props.wlSalePrice} Eth
+                          </chakra.span>
+                          /NFT
+                        </Text>
+                        <Flex mt="2rem">
+                          <Button colorScheme="orange" onClick={mint}>
+                            Buy 1 NFT
+                          </Button>
+                        </Flex>
+                      </Flex>
+
                       <Flex
                         width={["100%", "100%", "50%", "50%"]}
                         justify="center"
@@ -141,14 +155,3 @@ const WhitelistSale = (props) => {
 };
 
 export default WhitelistSale;
-
-{
-  /*<Flex
-                      width={["100%", "100%", "50%", "50%"]}
-                      justify="center"
-                      aline="center"
-                      p={["2rem", "2rem", "0", "0"]}
-                    >
-                      <Image src="/silly.jpg" width="60%" />
-                    </Flex>*/
-}

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Flex, Text } from "@chakra-ui/react";
 
-const Before = () => {
+const Before = (props) => {
   return (
     <Flex>
       <Text fontSize="3rem" fontWeight="bold">
-        Before
+        COMING SOON
       </Text>
     </Flex>
   );
