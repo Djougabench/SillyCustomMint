@@ -3,17 +3,23 @@ const { MerkleTree } = require("merkletreejs");
 const keccak256 = require("keccak256");
 var chai = require("chai");
 const { expect } = require("chai");
-const tokens = require("../tokens.json");
+const tokensOG = require("../tokensOG.json");
 
 describe(" sillycustom contract deployement", () => {
   before(async () => {
     console.log("     Deploy contract");
     console.log("      ✓ End deploy contract");
-    [this.owner, this.addr1, this.addr2, this.addr3, ...this.addrs] =
-      await ethers.getSigners();
+    [
+      this.owner,
+      this.addr1,
+      this.addr2,
+      this.addr3,
+      this.addr4,
+      ...this.addrs
+    ] = await ethers.getSigners();
 
     let tab = [];
-    tokens.map((token) => {
+    tokensOG.map((token) => {
       tab.push(token.address);
     });
     const leaves = tab.map((address) => keccak256(address));
@@ -175,7 +181,7 @@ describe(" sillycustom contract deployement", () => {
   });
 
   it("Should not mint 1 NFT from the whitelist sale if the user is not  Whitelisted ", async () => {
-    const leaf = keccak256(this.addr3.address);
+    const leaf = keccak256(this.addr4.address);
     const proof = this.tree.getHexProof(leaf);
 
     let whiteListPrice = await this.deployedContract.WhiteListPrice();

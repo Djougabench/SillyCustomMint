@@ -1,10 +1,10 @@
 const { MerkleTree } = require("merkletreejs");
 const keccak256 = require("keccak256");
-const tokens = require("./tokens.json");
+const tokensWL = require("./tokensWL.json");
 
 async function main() {
   let tab = [];
-  tokens.map((token) => {
+  tokensWL.map((token) => {
     tab.push(token.address);
   });
   const leaves = tab.map((address) => keccak256(address));

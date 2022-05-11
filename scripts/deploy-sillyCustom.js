@@ -1,12 +1,13 @@
 const hre = require("hardhat");
 const { MerkleTree } = require("merkletreejs");
 const keccak256 = require("keccak256");
-const tokens = require("../tokens.json");
+const tokens = require("../tokensOG.json");
+
 
 async function main() {
   let tab = [];
-  tokens.map((token) => {
-    tab.push(token.address);
+  tokens.map((tokensOG) => {
+    tab.push(tokensOG.address);
   });
   const leaves = tab.map((address) => keccak256(address));
   tree = new MerkleTree(leaves, keccak256, { sort: true });

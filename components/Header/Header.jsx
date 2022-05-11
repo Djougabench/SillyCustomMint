@@ -57,9 +57,7 @@ const Header = () => {
       px={["sm", "sm", "lg", "lg"]}
       p="2rem"
     >
-      <Text fontSize="2rem" fontWeight={900} letterSpacing={2}>
-        Silly Custom
-      </Text>
+      <Text fontSize="2rem" fontWeight={900} letterSpacing={2}></Text>
       <Flex align="center" justify="flex-end" flex={1}>
         {isLoading ? (
           <Spinner />
@@ -70,7 +68,7 @@ const Header = () => {
           >
             <Text fontSize={15}>
               Connected Wallet :
-              <chakra.span fontWeight="bold" color="orange.400">
+              <chakra.span fontWeight="bold" color="cyan">
                 {account.substring(0, 6)}...
                 {account.substring(account.length - 4, account.length)}
               </chakra.span>
@@ -78,9 +76,14 @@ const Header = () => {
           </Flex>
         ) : (
           <Button
-            colorScheme="orange"
+            variant="outline"
+            colorScheme="teal"
+            color="cyan"
             onClick={() => connectWallet()}
-            fontSize={15}
+            size="lg"
+            height="60px"
+            width="200px"
+            border="2px"
           >
             Connect Wallet
           </Button>

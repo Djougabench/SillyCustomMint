@@ -38,7 +38,7 @@ export default function Home() {
   const [totalSupply, setTotalSupply] = useState(null);
 
   const toast = useToast();
-  const contractAdress = "0xF3F703D91A909E87D79da828A8D817f1DBfA7fCD";
+  const contractAdress = "0xbc45F73212c9e4d20B75064cB0c762da8bcf952d";
 
   useEffect(() => {
     if (account) {
@@ -131,7 +131,7 @@ export default function Home() {
             <Flex>PLEASE CONNECT YOUR WALLET</Flex>
           )
         ) : (
-          <Flex>connect man</Flex>
+          <Flex>PLEASE CONNECT YOUR WALLET</Flex>
         )}
       </Flex>
     </Layout>
