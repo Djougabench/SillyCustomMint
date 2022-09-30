@@ -41,5 +41,5 @@ secrets.json
 #Hardhat files
 cache
 artifacts
-
+gas-report.txt
 

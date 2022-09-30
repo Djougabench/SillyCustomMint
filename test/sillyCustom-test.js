@@ -194,7 +194,7 @@ describe(" sillycustom contract deployement", () => {
       this.deployedContract
         .connect(this.addr3)
         .whitelistMint(this.addr3.address, 1, proof, overrides)
-    ).to.be.revertedWith("Not whitelisted");
+    ).to.be.revertedWith("NotWhitelisted");
   });
 
   it("Should mint 5 NFT from the public  sale  ", async () => {
@@ -234,6 +234,6 @@ describe(" sillycustom contract deployement", () => {
       this.deployedContract
         .connect(this.addr3)
         .publicSaleMint(this.addr3.address, 5, overrides)
-    ).to.be.revertedWith("OGWhitelist sale is still activated");
+    ).to.be.revertedWith("OGWhitelistSaleActivated");
   });
 });

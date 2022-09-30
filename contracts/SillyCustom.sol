@@ -11,6 +11,20 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "./ERC721A.sol";
 import "hardhat/console.sol";
 
+error SillyCustom__CantBeZero();
+error ContractNotActivated();
+error WhitelistSaleNotActivated();
+error NotWhitelisted();
+error only1NFTOnTheWhitelistSale();
+error MaxSupplyExceeded();
+error NotEnoughtFunds();
+error OGWhitelistSaleNotActivated();
+error only2NFTOnTheOGWhitelistSale();
+error OGWhitelistSaleActivated();
+error WhitelistSaleActivated();
+error only5NFTOnThePublicSale();
+error ReachedMaxSupply();
+
 contract SillyCustom is Ownable, ERC721A, PaymentSplitter {
     //To concatenate the URL of an NFT
     using Strings for uint256;
@@ -65,7 +79,6 @@ contract SillyCustom is Ownable, ERC721A, PaymentSplitter {
         0xF240A9D087bDa31ec2C334e8245c8152911E72a8,
         0x15294c91d24d2c4949d8193C705de6D65a3d26e3,
         0x2Fa0667Cd6B8d8BcE3fdDEc3425c629EE4a1269A
-
     ];
 
     uint256[] private _teamShares = [600, 395, 5];
@@ -107,20 +120,32 @@ contract SillyCustom is Ownable, ERC721A, PaymentSplitter {
         bytes32[] calldata _proof
     ) external payable callerIsUser {
         uint256 price = WhiteListPrice;
-        require(price != 0);
-        require(isActive, "The contract is not activated");
-        require(isWhitelistSaleActive, "Whitelist Sale is not activated");
-        require(isWhiteListed(msg.sender, _proof), "Not whitelisted");
-        require(
-            amountNFTsperWalletWhitelistSale[msg.sender] + _quantity <=
-                maxPerAddressDuringWhitelistMint,
-            "You can only get 1 NFT on the Whitelist Sale"
-        );
-        require(
-            totalSupply() + _quantity <= MAX_OGWHITELIST_AND_WHITELIST,
-            "Max supply exceeded"
-        );
-        require(msg.value >= price * _quantity, "Not enought funds");
+
+        if (price == 0) {
+            revert SillyCustom__CantBeZero();
+        }
+        if (!isActive) {
+            revert ContractNotActivated();
+        }
+        if (!isWhitelistSaleActive) {
+            revert WhitelistSaleNotActivated();
+        }
+        if (!isWhiteListed(msg.sender, _proof)) {
+            revert NotWhitelisted();
+        }
+        if (
+            amountNFTsperWalletWhitelistSale[msg.sender] + _quantity >
+            maxPerAddressDuringWhitelistMint
+        ) {
+            revert only1NFTOnTheWhitelistSale();
+        }
+        if (totalSupply() + _quantity > MAX_OGWHITELIST_AND_WHITELIST) {
+            revert MaxSupplyExceeded();
+        }
+        if (msg.value < price * _quantity) {
+            revert NotEnoughtFunds();
+        }
+
         amountNFTsperWalletWhitelistSale[msg.sender] += _quantity;
         _safeMint(_account, _quantity);
     }
@@ -139,23 +164,36 @@ contract SillyCustom is Ownable, ERC721A, PaymentSplitter {
         bytes32[] calldata _proof
     ) external payable callerIsUser {
         uint256 price = OGWhiteListPrice;
-        require(price != 0, "can't be 0");
-        require(isActive, "The contract is not activated");
-        require(
-            isOGWhitelistSaleActive,
-            "OG White Liste Sale  is not activated"
-        );
-        require(isWhiteListed(msg.sender, _proof), "Not whitelisted");
-        require(
-            amountNFTsPerWalletOGWhitelistSale[msg.sender] + _quantity <=
-                maxPerAddressDuringOGWhitelistSale,
-            "You can only get 2 NFT on the OGWhitelist Sale"
-        );
-        require(
-            totalSupply() + _quantity <= MAX_OG_WHITELIST,
-            "Max supply exceeded"
-        );
-        require(msg.value >= price * _quantity, "Not enought funds");
+
+        if (price == 0) {
+            revert SillyCustom__CantBeZero();
+        }
+        if (!isActive) {
+            revert ContractNotActivated();
+        }
+        if (!isOGWhitelistSaleActive) {
+            revert OGWhitelistSaleNotActivated();
+        }
+
+        if (!isWhiteListed(msg.sender, _proof)) {
+            revert NotWhitelisted();
+        }
+
+        if (
+            amountNFTsPerWalletOGWhitelistSale[msg.sender] + _quantity >
+            maxPerAddressDuringOGWhitelistSale
+        ) {
+            revert only2NFTOnTheOGWhitelistSale();
+        }
+
+        if (totalSupply() + _quantity > MAX_OG_WHITELIST) {
+            revert MaxSupplyExceeded();
+        }
+
+        if (msg.value < price * _quantity) {
+            revert NotEnoughtFunds();
+        }
+
         amountNFTsPerWalletOGWhitelistSale[msg.sender] += _quantity;
         _safeMint(_account, _quantity);
     }
@@ -173,23 +211,35 @@ contract SillyCustom is Ownable, ERC721A, PaymentSplitter {
         callerIsUser
     {
         uint256 price = publicSalePrice;
-        require(price != 0, "can't be 0");
-        require(isActive, "The contract is not activated");
-        require(
-            !isOGWhitelistSaleActive,
-            "OGWhitelist sale is still activated"
-        );
-        require(!isWhitelistSaleActive, "Whitelistsale is still activated");
-        require(
-            amountNFTsperWalletPublicSale[msg.sender] + _quantity <=
-                maxPerAddressDuringPublicSaleMint,
-            "You can only get 5 NFT on the Public Sale"
-        );
-        require(
-            totalSupply() + _quantity <= MAX_SUPPLY_MINUS_GIFT,
-            "Max supply exceeded"
-        );
-        require(msg.value >= price * _quantity, "Not enought funds");
+        if (price == 0) {
+            revert SillyCustom__CantBeZero();
+        }
+
+        if (!isActive) {
+            revert ContractNotActivated();
+        }
+        if (isOGWhitelistSaleActive) {
+            revert OGWhitelistSaleActivated();
+        }
+
+        if (isWhitelistSaleActive) {
+            revert WhitelistSaleActivated();
+        }
+
+        if (
+            amountNFTsperWalletPublicSale[msg.sender] + _quantity >
+            maxPerAddressDuringPublicSaleMint
+        ) {
+            revert only5NFTOnThePublicSale();
+        }
+
+        if (totalSupply() + _quantity > MAX_SUPPLY_MINUS_GIFT) {
+            revert MaxSupplyExceeded();
+        }
+        if (msg.value < price * _quantity) {
+            revert NotEnoughtFunds();
+        }
+
         amountNFTsperWalletPublicSale[msg.sender] += _quantity;
         _safeMint(_account, _quantity);
     }
@@ -201,13 +251,19 @@ contract SillyCustom is Ownable, ERC721A, PaymentSplitter {
      * @param _quantity Amount of NFTs the owner wants to gift
      **/
     function gift(address _to, uint256 _quantity) external onlyOwner {
-        require(isActive, "The contract is not activated");
-        require(
-            !isOGWhitelistSaleActive,
-            "OGWhitelist sale is still activated"
-        );
-        require(!isWhitelistSaleActive, "Whitelistsale is still activated");
-        require(totalSupply() + _quantity <= MAX_SUPPLY, "Reached max Supply");
+      if (!isActive) {
+            revert ContractNotActivated();
+        }
+       if (isOGWhitelistSaleActive) {
+            revert OGWhitelistSaleActivated();
+        }
+          if (isWhitelistSaleActive) {
+            revert WhitelistSaleActivated();
+        }
+         if (totalSupply() + _quantity > MAX_SUPPLY) {
+            revert ReachedMaxSupply();
+        }
+        
         _safeMint(_to, _quantity);
     }
 
