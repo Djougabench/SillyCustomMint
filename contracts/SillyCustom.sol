@@ -12,18 +12,18 @@ import "./ERC721A.sol";
 import "hardhat/console.sol";
 
 error SillyCustom__CantBeZero();
-error ContractNotActivated();
-error WhitelistSaleNotActivated();
-error NotWhitelisted();
-error only1NFTOnTheWhitelistSale();
-error MaxSupplyExceeded();
-error NotEnoughtFunds();
-error OGWhitelistSaleNotActivated();
-error only2NFTOnTheOGWhitelistSale();
-error OGWhitelistSaleActivated();
-error WhitelistSaleActivated();
-error only5NFTOnThePublicSale();
-error ReachedMaxSupply();
+error SillyCustom__ContractNotActivated();
+error SillyCustom__WhitelistSaleNotActivated();
+error SillyCustom__NotWhitelisted();
+error SillyCustom__only1NFTOnTheWhitelistSale();
+error SillyCustom__MaxSupplyExceeded();
+error SillyCustom__NotEnoughtFunds();
+error SillyCustom__OGWhitelistSaleNotActivated();
+error SillyCustom__only2NFTOnTheOGWhitelistSale();
+error SillyCustom__OGWhitelistSaleActivated();
+error SillyCustom__WhitelistSaleActivated();
+error SillyCustom__only5NFTOnThePublicSale();
+error SillyCustom__ReachedMaxSupply();
 
 contract SillyCustom is Ownable, ERC721A, PaymentSplitter {
     //To concatenate the URL of an NFT
@@ -125,25 +125,25 @@ contract SillyCustom is Ownable, ERC721A, PaymentSplitter {
             revert SillyCustom__CantBeZero();
         }
         if (!isActive) {
-            revert ContractNotActivated();
+            revert SillyCustom__ContractNotActivated();
         }
         if (!isWhitelistSaleActive) {
-            revert WhitelistSaleNotActivated();
+            revert SillyCustom__WhitelistSaleNotActivated();
         }
         if (!isWhiteListed(msg.sender, _proof)) {
-            revert NotWhitelisted();
+            revert SillyCustom__NotWhitelisted();
         }
         if (
             amountNFTsperWalletWhitelistSale[msg.sender] + _quantity >
             maxPerAddressDuringWhitelistMint
         ) {
-            revert only1NFTOnTheWhitelistSale();
+            revert SillyCustom__only1NFTOnTheWhitelistSale();
         }
         if (totalSupply() + _quantity > MAX_OGWHITELIST_AND_WHITELIST) {
-            revert MaxSupplyExceeded();
+            revert SillyCustom__MaxSupplyExceeded();
         }
         if (msg.value < price * _quantity) {
-            revert NotEnoughtFunds();
+            revert SillyCustom__NotEnoughtFunds();
         }
 
         amountNFTsperWalletWhitelistSale[msg.sender] += _quantity;
@@ -169,29 +169,29 @@ contract SillyCustom is Ownable, ERC721A, PaymentSplitter {
             revert SillyCustom__CantBeZero();
         }
         if (!isActive) {
-            revert ContractNotActivated();
+            revert SillyCustom__ContractNotActivated();
         }
         if (!isOGWhitelistSaleActive) {
-            revert OGWhitelistSaleNotActivated();
+            revert SillyCustom__OGWhitelistSaleNotActivated();
         }
 
         if (!isWhiteListed(msg.sender, _proof)) {
-            revert NotWhitelisted();
+            revert SillyCustom__NotWhitelisted();
         }
 
         if (
             amountNFTsPerWalletOGWhitelistSale[msg.sender] + _quantity >
             maxPerAddressDuringOGWhitelistSale
         ) {
-            revert only2NFTOnTheOGWhitelistSale();
+            revert SillyCustom__only2NFTOnTheOGWhitelistSale();
         }
 
         if (totalSupply() + _quantity > MAX_OG_WHITELIST) {
-            revert MaxSupplyExceeded();
+            revert SillyCustom__MaxSupplyExceeded();
         }
 
         if (msg.value < price * _quantity) {
-            revert NotEnoughtFunds();
+            revert SillyCustom__NotEnoughtFunds();
         }
 
         amountNFTsPerWalletOGWhitelistSale[msg.sender] += _quantity;
@@ -216,28 +216,28 @@ contract SillyCustom is Ownable, ERC721A, PaymentSplitter {
         }
 
         if (!isActive) {
-            revert ContractNotActivated();
+            revert SillyCustom__ContractNotActivated();
         }
         if (isOGWhitelistSaleActive) {
-            revert OGWhitelistSaleActivated();
+            revert SillyCustom__OGWhitelistSaleActivated();
         }
 
         if (isWhitelistSaleActive) {
-            revert WhitelistSaleActivated();
+            revert SillyCustom__WhitelistSaleActivated();
         }
 
         if (
             amountNFTsperWalletPublicSale[msg.sender] + _quantity >
             maxPerAddressDuringPublicSaleMint
         ) {
-            revert only5NFTOnThePublicSale();
+            revert SillyCustom__only5NFTOnThePublicSale();
         }
 
         if (totalSupply() + _quantity > MAX_SUPPLY_MINUS_GIFT) {
-            revert MaxSupplyExceeded();
+            revert SillyCustom__MaxSupplyExceeded();
         }
         if (msg.value < price * _quantity) {
-            revert NotEnoughtFunds();
+            revert SillyCustom__NotEnoughtFunds();
         }
 
         amountNFTsperWalletPublicSale[msg.sender] += _quantity;
@@ -252,16 +252,16 @@ contract SillyCustom is Ownable, ERC721A, PaymentSplitter {
      **/
     function gift(address _to, uint256 _quantity) external onlyOwner {
       if (!isActive) {
-            revert ContractNotActivated();
+            revert SillyCustom__ContractNotActivated();
         }
        if (isOGWhitelistSaleActive) {
-            revert OGWhitelistSaleActivated();
+            revert SillyCustom__OGWhitelistSaleActivated();
         }
           if (isWhitelistSaleActive) {
-            revert WhitelistSaleActivated();
+            revert SillyCustom__WhitelistSaleActivated();
         }
          if (totalSupply() + _quantity > MAX_SUPPLY) {
-            revert ReachedMaxSupply();
+            revert SillyCustom__ReachedMaxSupply();
         }
         
         _safeMint(_to, _quantity);
